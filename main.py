@@ -10,16 +10,28 @@ def del_task():
     selected_index = task_list_box.curselection()
     if selected_index:
         task_list_box.delete(selected_index)
+    else:
+        selected_index = in_progress_list_box.curselection()
+        if selected_index:
+            in_progress_list_box.delete(selected_index)
+        else:
+            selected_index = completed_list_box.curselection()
+            if selected_index:
+                completed_list_box.delete(selected_index)
 
-def complete_task():
+def move_to_in_progress():
     selected_index = task_list_box.curselection()
     if selected_index:
-        task_list_box.itemconfig(selected_index, bg="yellow green")
-        #text = task_list_box.get(selected_index)
-        #task_list_box.delete(selected_index)
-        #task_list_box.insert(selected_index, f"✅{text}✅")
-        task_list_box.selection_clear(0, tk.END)
+        task = task_list_box.get(selected_index)
+        task_list_box.delete(selected_index)
+        in_progress_list_box.insert(tk.END, task)
 
+def move_to_completed():
+    selected_index = in_progress_list_box.curselection()
+    if selected_index:
+        task = in_progress_list_box.get(selected_index)
+        in_progress_list_box.delete(selected_index)
+        completed_list_box.insert(tk.END, task)
 
 root = tk.Tk()
 root.title('Task List Draft')
@@ -37,13 +49,29 @@ add_task_button.pack(pady=5)
 del_task_button = tk.Button(root, text="Delete a task", command=del_task)
 del_task_button.pack(pady=5)
 
-mark_task_button = tk.Button(root, text="Complete a task", command=complete_task)
-mark_task_button.pack(pady=5)
+move_to_in_progress_button = tk.Button(root, text="Move to In Progress", command=move_to_in_progress)
+move_to_in_progress_button.pack(pady=5)
 
-text2 = tk.Label(root, text="list of tasks:", bg='CadetBlue4')
+move_to_completed_button = tk.Button(root, text="Move to Completed", command=move_to_completed)
+move_to_completed_button.pack(pady=5)
+
+text2 = tk.Label(root, text="Backlog:", bg='CadetBlue4')
 text2.pack(pady=5)
 
-task_list_box = tk.Listbox(root, height=10, width=50, bg='CadetBlue4')
+task_list_box = tk.Listbox(root, height=5, width=50, bg='CadetBlue4')
 task_list_box.pack(pady=10, padx=10)
+
+text2 = tk.Label(root, text="IN PROGRESS:", bg='CadetBlue4')
+text2.pack(pady=5)
+
+in_progress_list_box = tk.Listbox(root, height=5, width=50, bg='light yellow')
+in_progress_list_box.pack(pady=10, padx=10)
+
+text2 = tk.Label(root, text="DONE:", bg='CadetBlue4')
+text2.pack(pady=5)
+
+completed_list_box = tk.Listbox(root, height=5, width=50, bg='pale green')
+completed_list_box.pack(pady=10, padx=10)
+
 
 root.mainloop()
